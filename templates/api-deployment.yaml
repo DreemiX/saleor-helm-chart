@@ -20,7 +20,7 @@ spec:
         - name: api
           image: "{{ .Values.images.api }}"
           ports:
-            - containerPort: {{ .Values.services.api.port }}
+            - containerPort: {{ .Values.components.api.service.port }}
           env:
             - name: JAEGER_AGENT_HOST
               value: "{{ .Values.env.api.JAEGER_AGENT_HOST }}"
@@ -29,7 +29,7 @@ spec:
             - name: ALLOWED_HOSTS
               value: "{{ .Values.env.api.ALLOWED_HOSTS }}"
             - name: DATABASE_URL
-              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql:5432/saleor"  
+              value: "postgresql://{{ .Values.components.postgresql.auth.username }}:{{ .Values.components.postgresql.auth.password }}@{{ .Release.Name }}-postgresql:5432/saleor"
           {{- with .Values.components.api.extraParams }}
           {{- toYaml . | nindent 10 }}
           {{- end }}

@@ -5,10 +5,10 @@ metadata:
   labels:
     app: saleor
 spec:
-  type: {{ .Values.services.api.type }}
+  type: {{ .Values.components.api.service.type }}
   ports:
-    - port: {{ .Values.services.api.port }}
-      targetPort: {{ .Values.services.api.port }}
+    - port: {{ .Values.components.api.service.port }}
+      targetPort: {{ .Values.components.api.service.port }}
   selector:
     app: saleor
     component: api
