@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      helm_tgz_path: ${{ steps.get_version.outputs.helm_tgz_path }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,12 +37,19 @@ jobs:
           pwd
           echo "Listing files in .cr-release-packages:"
           ls -la .cr-release-packages/
+      - name: Get Chart Version + Dynamically Define Helm TGZ Path
+        id: get_version
+        run: |
+          version=$(grep '^version:' Chart.yaml | awk '{print $2}')
+          name=$(grep '^name:' Chart.yaml | awk '{print $2}')
+          tgz_path=".cr-release-packages/${name}-${version}.tgz"
+          echo "tgz_path=$tgz_path" >> $GITHUB_ENV
+          echo "tgz_path=$tgz_path" >> $GITHUB_OUTPUT
       - name: Save package as artifact
         uses: actions/upload-artifact@v3
         with:
           name: helm-charts
-          path: .cr-release-packages/*.tgz  # Чіткий шаблон для файлів
-
+          path: ${{ env.tgz_path }}  # Використовуємо динамічний шлях, отриманий з Chart.yaml
   publish:
     needs: package
     runs-on: ubuntu-latest
