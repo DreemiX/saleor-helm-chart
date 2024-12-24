@@ -64,10 +64,15 @@ postgresql:
   auth:
     username: saleor
     password: saleor
-    database: saleor
+  persistence:
+    enabled: true
+    size: 2Gi
 
 # Налаштування для Redis
 redis:
   enabled: true
   auth:
     enabled: false
+  persistence:
+    enabled: true
+    size: 2Gi

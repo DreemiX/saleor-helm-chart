@@ -21,14 +21,16 @@ spec:
           ports:
             - containerPort: 8000
           env:
-            - name: DATABASE_URL
-              value: postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ include "saleor.fullname" . }}-postgresql/{{ .Values.postgresql.auth.database }}
-            - name: REDIS_URL
-              value: redis://{{ include "saleor.fullname" . }}-redis-master:6379/0
-            - name: SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "saleor.fullname" . }}-secret
-                  key: secret-key
-          resources:
-            {{- toYaml .Values.api.resources | nindent 12 }}
+            - name: JAEGER_AGENT_HOST
+              value: jaeger
+            - name: DASHBOARD_URL
+              value: http://localhost:9000/
+            - name: ALLOWED_HOSTS
+              value: localhost,api
+          volumeMounts:
+            - name: saleor-media
+              mountPath: /app/media
+      volumes:
+        - name: saleor-media
+          persistentVolumeClaim:
+            claimName: saleor-media
