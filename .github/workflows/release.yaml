@@ -9,7 +9,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Додати дозвіл на запис
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,7 +27,22 @@ jobs:
       - name: Add dependency repositories
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          
+
+      - name: Update Helm dependencies
+        run: |
+          helm dependency update .
+
+      - name: Package Helm chart
+        run: |
+          mkdir -p .cr-release-packages
+          helm package . -d .cr-release-packages
+
+      - name: Upload chart package
+        uses: actions/upload-artifact@v3
+        with:
+          name: helm-chart
+          path: .cr-release-packages/*.tgz
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.5.0
         env:
