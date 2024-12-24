@@ -3,7 +3,7 @@ entries:
   saleor:
   - apiVersion: v2
     appVersion: "3.20"
-    created: "2024-12-24T10:18:24.548406325Z"
+    created: "2024-12-24T11:01:07.470256877Z"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
@@ -20,7 +20,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: "3.20"
-    created: "2024-12-24T10:18:24.539395764Z"
+    created: "2024-12-24T11:01:07.460998383Z"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
@@ -35,4 +35,4 @@ entries:
     urls:
     - https://DreemiX.github.io/saleor-helm-chart/saleor-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-24T10:18:24.530226033Z"
+generated: "2024-12-24T11:01:07.451424609Z"
