@@ -3,12 +3,13 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-dashboard
   labels:
-    app: saleor
+    app: {{ .Chart.Name }}
+    component: dashboard
 spec:
-  type: {{ .Values.services.dashboard.type }}
+  type: {{ .Values.components.dashboard.service.type }}
   ports:
-    - port: {{ .Values.services.dashboard.port }}
-      targetPort: {{ .Values.services.dashboard.port }}
+    - port: {{ .Values.components.dashboard.service.port }}
+      targetPort: 80
   selector:
-    app: saleor
+    app: {{ .Chart.Name }}
     component: dashboard
