@@ -46,8 +46,9 @@ jobs:
           echo "chart_version=$chart_version" >> $GITHUB_OUTPUT
           echo "chart_name=$chart_name" >> $GITHUB_OUTPUT
 
-      # Створюємо GitHub Release
+    # Крок створення GitHub релізу
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         with:
           tag_name: "v${{ steps.chart_info.outputs.chart_version }}"
@@ -58,11 +59,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Завантажуємо .tgz у реліз
+     # Завантаження чарту в реліз
       - name: Upload Chart .tgz to Release
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # Передача upload_url
           asset_path: ${{ env.chart_tgz_path }}
           asset_name: "${{ steps.chart_info.outputs.chart_name }}-${{ steps.chart_info.outputs.chart_version }}.tgz"
           asset_content_type: application/gzip
