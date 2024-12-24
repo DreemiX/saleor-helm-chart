@@ -43,13 +43,25 @@ jobs:
         run: |
           helm repo index .cr-release-packages
 
-      # Крок 3: Створення GitHub Release
+      # Крок 3: Створення GitHub Release (виправлений)
       - name: Create Release
         run: |
-          version=$(grep 'version:' Chart.yaml | awk '{print $2}')
-          gh release create "v$version" .cr-release-packages/*.tgz \
-            --title "Release v$version" \
-            --generate-notes
+          # Отримуємо версію та очищаємо її від можливих пробілів
+          version=$(grep '^version:' Chart.yaml | sed 's/[^0-9.]*//g' | tr -d '[:space:]')
+          # Перевіряємо, що версія не пуста
+          if [ -n "$version" ]; then
+            # Перевіряємо, чи існує вже такий реліз
+            if ! gh release view "v$version" &>/dev/null; then
+              gh release create "v$version" .cr-release-packages/*.tgz \
+                --title "Release v$version" \
+                --generate-notes
+            else
+              echo "Release v$version already exists"
+            fi
+          else
+            echo "Error: Could not determine version from Chart.yaml"
+            exit 1
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
