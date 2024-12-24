@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  release:
+  package:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,13 +32,11 @@ jobs:
         run: |
           helm dependency update .
 
-      # Крок 1: Створення пакету
       - name: Package Helm chart
         run: |
           mkdir -p .cr-release-packages
           helm package . -d .cr-release-packages
 
-      # Крок 2: Зберігаємо пакет як артефакт
       - name: Save package as artifact
         uses: actions/upload-artifact@v3
         with:
@@ -46,7 +44,6 @@ jobs:
           path: .cr-release-packages/*.tgz
           retention-days: 1
 
-      # Крок 3: Створення GitHub Release
       - name: Create Release
         run: |
           version=$(grep '^version:' Chart.yaml | sed 's/[^0-9.]*//g' | tr -d '[:space:]')
@@ -65,21 +62,32 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Крок 4: Переключення на gh-pages
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
       - name: Checkout gh-pages
         uses: actions/checkout@v4
         with:
           ref: gh-pages
           clean: true
 
-      # Крок 5: Відновлення пакету з артефакту
       - name: Download chart artifact
         uses: actions/download-artifact@v3
         with:
           name: helm-charts
           path: .
 
-      # Крок 6: Оновлення індексу
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
       - name: Update Helm index
         run: |
           if [ -f index.yaml ]; then
@@ -88,7 +96,6 @@ jobs:
             helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
           fi
 
-      # Крок 7: Публікація змін
       - name: Commit and push changes
         run: |
           git add .
