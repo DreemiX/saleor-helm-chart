@@ -1,0 +1,73 @@
+# Глобальні налаштування
+global:
+  imageRegistry: ""
+  storageClass: ""
+
+# API налаштування
+api:
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.20"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  service:
+    type: ClusterIP
+    port: 8000
+
+# Dashboard налаштування
+dashboard:
+  image:
+    repository: ghcr.io/saleor/saleor-dashboard
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 80
+
+# Worker налаштування
+worker:
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.20"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+
+# Налаштування для Jaeger
+jaeger:
+  enabled: true
+  image:
+    repository: jaegertracing/all-in-one
+    tag: latest
+  service:
+    type: ClusterIP
+
+# Налаштування для Mailpit
+mailpit:
+  enabled: true
+  image:
+    repository: axllent/mailpit
+    tag: latest
+  service:
+    type: ClusterIP
+
+# Налаштування для PostgreSQL
+postgresql:
+  enabled: true
+  auth:
+    username: saleor
+    password: saleor
+    database: saleor
+
+# Налаштування для Redis
+redis:
+  enabled: true
+  auth:
+    enabled: false
