@@ -1,35 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "saleor.fullname" . }}-api
+  name: {{ .Release.Name }}-api
+  labels:
+    app: saleor
 spec:
-  replicas: {{ .Values.api.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "saleor.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: api
+      app: saleor
+      component: api
   template:
     metadata:
       labels:
-        {{- include "saleor.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: api
+        app: saleor
+        component: api
     spec:
       containers:
         - name: api
-          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
-          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          image: "{{ .Values.images.api }}"
           ports:
-            - containerPort: 8000
+            - containerPort: {{ .Values.services.api.port }}
           env:
             - name: JAEGER_AGENT_HOST
-              value: jaeger
+              value: "{{ .Values.env.api.JAEGER_AGENT_HOST }}"
             - name: DASHBOARD_URL
-              value: http://localhost:9000/
+              value: "{{ .Values.env.api.DASHBOARD_URL }}"
             - name: ALLOWED_HOSTS
-              value: localhost,api
+              value: "{{ .Values.env.api.ALLOWED_HOSTS }}"
           volumeMounts:
             - name: saleor-media
-              mountPath: /app/media
+              mountPath: {{ .Values.volumes.saleorMedia }}
       volumes:
         - name: saleor-media
           persistentVolumeClaim:

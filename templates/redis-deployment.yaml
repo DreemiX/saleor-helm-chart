@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-redis
+  labels:
+    app: saleor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: saleor
+      component: redis
+  template:
+    metadata:
+      labels:
+        app: saleor
+        component: redis
+    spec:
+      containers:
+        - name: redis
+          image: "{{ .Values.images.redis }}"
+          ports:
+            - containerPort: {{ .Values.services.redis.port }}
+          volumeMounts:
+            - name: saleor-redis
+              mountPath: {{ .Values.volumes.saleorRedis }}
+      volumes:
+        - name: saleor-redis
+          persistentVolumeClaim:
+            claimName: saleor-redis

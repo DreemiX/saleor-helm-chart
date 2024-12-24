@@ -1,78 +1,52 @@
-# Глобальні налаштування
-global:
-  imageRegistry: ""
-  storageClass: ""
+replicaCount: 1
 
-# API налаштування
-api:
-  image:
-    repository: ghcr.io/saleor/saleor
-    tag: "3.20"
-    pullPolicy: IfNotPresent
-  replicaCount: 1
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 500m
-      memory: 512Mi
-  service:
-    type: ClusterIP
+images:
+  api: ghcr.io/saleor/saleor:3.20
+  dashboard: ghcr.io/saleor/saleor-dashboard:latest
+  db: library/postgres:15-alpine
+  redis: library/redis:7.0-alpine
+  worker: ghcr.io/saleor/saleor:3.20
+  jaeger: jaegertracing/all-in-one
+  mailpit: axllent/mailpit
+
+services:
+  api:
     port: 8000
-
-# Dashboard налаштування
-dashboard:
-  image:
-    repository: ghcr.io/saleor/saleor-dashboard
-    tag: "latest"
-    pullPolicy: IfNotPresent
-  replicaCount: 1
-  service:
     type: ClusterIP
-    port: 80
-
-# Worker налаштування
-worker:
-  image:
-    repository: ghcr.io/saleor/saleor
-    tag: "3.20"
-    pullPolicy: IfNotPresent
-  replicaCount: 1
-
-# Налаштування для Jaeger
-jaeger:
-  enabled: true
-  image:
-    repository: jaegertracing/all-in-one
-    tag: latest
-  service:
+  dashboard:
+    port: 9000
+    type: ClusterIP
+  db:
+    port: 5432
+    type: ClusterIP
+  redis:
+    port: 6379
+    type: ClusterIP
+  jaeger:
+    ports:
+      - 5775
+      - 6831
+      - 6832
+      - 5778
+      - 16686
+      - 14268
+      - 9411
+    type: ClusterIP
+  mailpit:
+    smtpPort: 1025
+    webPort: 8025
     type: ClusterIP
 
-# Налаштування для Mailpit
-mailpit:
-  enabled: true
-  image:
-    repository: axllent/mailpit
-    tag: latest
-  service:
-    type: ClusterIP
+env:
+  api:
+    JAEGER_AGENT_HOST: "jaeger"
+    DASHBOARD_URL: "http://localhost:9000/"
+    ALLOWED_HOSTS: "localhost,api"
+  db:
+    POSTGRES_USER: "saleor"
+    POSTGRES_PASSWORD: "saleor"
 
-# Налаштування для PostgreSQL
-postgresql:
-  enabled: true
-  auth:
-    username: saleor
-    password: saleor
-  persistence:
-    enabled: true
-    size: 2Gi
-
-# Налаштування для Redis
-redis:
-  enabled: true
-  auth:
-    enabled: false
-  persistence:
-    enabled: true
-    size: 2Gi
+volumes:
+  saleorDb: /var/lib/postgresql/data
+  saleorRedis: /data
+  saleorMedia: /app/media

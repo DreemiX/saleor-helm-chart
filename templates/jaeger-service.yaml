@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-jaeger
+  labels:
+    app: saleor
+spec:
+  type: {{ .Values.services.jaeger.type }}
+  ports:
+    {{- range .Values.services.jaeger.ports }}
+    - port: {{ . }}
+      targetPort: {{ . }}
+    {{- end }}
+  selector:
+    app: saleor
+    component: jaeger

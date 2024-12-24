@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mailpit
+  labels:
+    app: saleor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: saleor
+      component: mailpit
+  template:
+    metadata:
+      labels:
+        app: saleor
+        component: mailpit
+    spec:
+      containers:
+        - name: mailpit
+          image: "{{ .Values.images.mailpit }}"
+          ports:
+            - containerPort: {{ .Values.services.mailpit.smtpPort }}
+            - containerPort: {{ .Values.services.mailpit.webPort }}

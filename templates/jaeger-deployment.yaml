@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-jaeger
+  labels:
+    app: saleor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: saleor
+      component: jaeger
+  template:
+    metadata:
+      labels:
+        app: saleor
+        component: jaeger
+    spec:
+      containers:
+        - name: jaeger
+          image: "{{ .Values.images.jaeger }}"
+          ports:
+            {{- range .Values.services.jaeger.ports }}
+            - containerPort: {{ . }}
+            {{- end }}

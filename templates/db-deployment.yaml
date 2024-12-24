@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-db
+  labels:
+    app: saleor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: saleor
+      component: db
+  template:
+    metadata:
+      labels:
+        app: saleor
+        component: db
+    spec:
+      containers:
+        - name: db
+          image: "{{ .Values.images.db }}"
+          ports:
+            - containerPort: {{ .Values.services.db.port }}
+          env:
+            - name: POSTGRES_USER
+              value: "{{ .Values.env.db.POSTGRES_USER }}"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.env.db.POSTGRES_PASSWORD }}"
+          volumeMounts:
+            - name: saleor-db
+              mountPath: {{ .Values.volumes.saleorDb }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: saleor-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

@@ -1,22 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "saleor.fullname" . }}-dashboard
+  name: {{ .Release.Name }}-dashboard
+  labels:
+    app: saleor
 spec:
-  replicas: {{ .Values.dashboard.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "saleor.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: dashboard
+      app: saleor
+      component: dashboard
   template:
     metadata:
       labels:
-        {{- include "saleor.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: dashboard
+        app: saleor
+        component: dashboard
     spec:
       containers:
         - name: dashboard
-          image: "{{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}"
-          imagePullPolicy: {{ .Values.dashboard.image.pullPolicy }}
+          image: "{{ .Values.images.dashboard }}"
           ports:
-            - containerPort: 80
+            - containerPort: {{ .Values.services.dashboard.port }}
