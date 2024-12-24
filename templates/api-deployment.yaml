@@ -23,11 +23,11 @@ spec:
             - containerPort: {{ .Values.components.api.service.port }}
           env:
             - name: JAEGER_AGENT_HOST
-              value: "{{ .Values.env.api.JAEGER_AGENT_HOST }}"
+              value: "{{ .Values.env.api.JAEGER_AGENT_HOST | default `jaeger` }}"
             - name: DASHBOARD_URL
-              value: "{{ .Values.env.api.DASHBOARD_URL }}"
+              value: "{{ .Values.env.api.DASHBOARD_URL | default `http://localhost:9000/` }}"
             - name: ALLOWED_HOSTS
-              value: "{{ .Values.env.api.ALLOWED_HOSTS }}"
+              value: "{{ .Values.env.api.ALLOWED_HOSTS | default `localhost,api` }}"
             - name: DATABASE_URL
               value: "postgresql://{{ .Values.components.postgresql.auth.username }}:{{ .Values.components.postgresql.auth.password }}@{{ .Release.Name }}-postgresql:5432/saleor"
           {{- with .Values.components.api.extraParams }}
