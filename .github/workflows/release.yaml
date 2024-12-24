@@ -39,7 +39,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: helm-charts
-          path: ${{ github.workspace }}/.cr-release-packages/**  # Абсолютний шлях до файлів
+          path: .cr-release-packages/*.tgz  # Чіткий шаблон для файлів
+
   publish:
     needs: package
     runs-on: ubuntu-latest
