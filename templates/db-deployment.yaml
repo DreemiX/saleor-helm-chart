@@ -1,14 +1,3 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: saleor-db
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,12 +20,27 @@ spec:
         - name: db
           image: "{{ .Values.images.db }}"
           ports:
-            - containerPort: {{ .Values.services.db.port }}
+            - containerPort: {{ .Values.components.db.service.port }}
           env:
             - name: POSTGRES_USER
-              value: "{{ .Values.env.db.POSTGRES_USER }}"
+              value: "{{ .Values.components.db.env.POSTGRES_USER }}"
             - name: POSTGRES_PASSWORD
-              value: "{{ .Values.env.db.POSTGRES_PASSWORD }}"
+              value: "{{ .Values.components.db.env.POSTGRES_PASSWORD }}"
           volumeMounts:
             - name: saleor-db
               mountPath: {{ .Values.volumes.saleorDb }}
+      volumes:
+        - name: saleor-db
+          persistentVolumeClaim:
+            claimName: saleor-db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: saleor-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.components.db.persistence.size }}

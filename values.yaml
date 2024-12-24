@@ -9,42 +9,66 @@ images:
   jaeger: jaegertracing/all-in-one
   mailpit: axllent/mailpit
 
-services:
+components:
   api:
-    port: 8000
-    type: ClusterIP
+    enabled: true
+    service:
+      port: 8000
+      type: ClusterIP
+    extraParams: {}
   dashboard:
-    port: 9000
-    type: ClusterIP
+    enabled: true
+    service:
+      port: 9000
+      type: ClusterIP
+    extraParams: {}
   db:
-    port: 5432
-    type: ClusterIP
+    enabled: true
+    service:
+      port: 5432
+      type: ClusterIP
+    env:
+      POSTGRES_USER: "saleor"
+      POSTGRES_PASSWORD: "saleor"
+    persistence:
+      enabled: true
+      size: 5Gi
+    extraParams: {}
   redis:
-    port: 6379
-    type: ClusterIP
+    enabled: true
+    service:
+      port: 6379
+      type: ClusterIP
+    master:
+      persistence:
+        enabled: true
+        size: 2Gi
+    replica:
+      replicaCount: 0  # Встановіть 0, якщо не потрібні репліки
+      persistence:
+        enabled: true
+        size: 2Gi
+    extraParams: {}
   jaeger:
-    ports:
-      - 5775
-      - 6831
-      - 6832
-      - 5778
-      - 16686
-      - 14268
-      - 9411
-    type: ClusterIP
+    enabled: true
+    service:
+      ports:
+        - 5775
+        - 6831
+        - 6832
+        - 5778
+        - 16686
+        - 14268
+        - 9411
+      type: ClusterIP
+    extraParams: {}
   mailpit:
-    smtpPort: 1025
-    webPort: 8025
-    type: ClusterIP
-
-env:
-  api:
-    JAEGER_AGENT_HOST: "jaeger"
-    DASHBOARD_URL: "http://localhost:9000/"
-    ALLOWED_HOSTS: "localhost,api"
-  db:
-    POSTGRES_USER: "saleor"
-    POSTGRES_PASSWORD: "saleor"
+    enabled: true
+    service:
+      smtpPort: 1025
+      webPort: 8025
+      type: ClusterIP
+    extraParams: {}
 
 volumes:
   saleorDb: /var/lib/postgresql/data
