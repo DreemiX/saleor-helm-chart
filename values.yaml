@@ -3,7 +3,6 @@ replicaCount: 1
 images:
   api: ghcr.io/saleor/saleor:3.20
   dashboard: ghcr.io/saleor/saleor-dashboard:latest
-  db: library/postgres:15-alpine
   redis: library/redis:7.0-alpine
   worker: ghcr.io/saleor/saleor:3.20
   jaeger: jaegertracing/all-in-one
@@ -22,14 +21,11 @@ components:
       port: 9000
       type: ClusterIP
     extraParams: {}
-  db:
+  postgresql:
     enabled: true
-    service:
-      port: 5432
-      type: ClusterIP
-    env:
-      POSTGRES_USER: "saleor"
-      POSTGRES_PASSWORD: "saleor"
+    auth:
+      username: saleor
+      password: saleor
     persistence:
       enabled: true
       size: 5Gi
