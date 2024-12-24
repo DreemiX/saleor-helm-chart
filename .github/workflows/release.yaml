@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-
 jobs:
   package-publish-release:
     runs-on: ubuntu-latest
@@ -15,27 +14,22 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
       # Встановлюємо Helm
       - name: Install Helm
         uses: azure/setup-helm@v3
-
       # Оновлюємо залежності Helm
       - name: Update Helm dependencies
         run: |
           helm dependency update .
-
       # Пакуємо Helm Chart
       - name: Package Helm chart
         run: |
           mkdir -p .cr-release-packages
           helm package . -d .cr-release-packages
-
       # Витягаємо назву та версію чарта
       - name: Get Chart Info
         id: chart_info
@@ -45,7 +39,6 @@ jobs:
           echo "chart_tgz_path=.cr-release-packages/${chart_name}-${chart_version}.tgz" >> $GITHUB_ENV
           echo "chart_version=$chart_version" >> $GITHUB_OUTPUT
           echo "chart_name=$chart_name" >> $GITHUB_OUTPUT
-
     # Крок створення GitHub релізу
       - name: Create GitHub Release
         id: create_release
@@ -58,7 +51,6 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
      # Завантаження чарту в реліз
       - name: Upload Chart .tgz to Release
         uses: actions/upload-release-asset@v1
@@ -69,26 +61,22 @@ jobs:
           asset_content_type: application/gzip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # Завантажуємо з релізу і публікуємо в gh-pages
       - name: Checkout gh-pages
         uses: actions/checkout@v4
         with:
           ref: gh-pages
           clean: true
-
+      - name: Cleanup old tgz files
+        run: |
+          rm -f *.tgz
       - name: Download Chart from Release
         run: |
-          curl -sL -o "${{ env.chart_version }}.tgz" \
-          "https://github.com/${{ github.repository }}/releases/download/v${{ env.chart_version }}/${{ env.chart_name }}-${{ env.chart_version }}.tgz"
-
+          curl -sL -o "${{ steps.chart_info.outputs.chart_name }}-${{ steps.chart_info.outputs.chart_version }}.tgz" \
+          "https://github.com/${{ github.repository }}/releases/download/v${{ steps.chart_info.outputs.chart_version }}/${{ steps.chart_info.outputs.chart_name }}-${{ steps.chart_info.outputs.chart_version }}.tgz"
       - name: Update Helm Repo Index
         run: |
-          if [ -f index.yaml ]; then
-            helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }} --merge index.yaml
-          else
-            helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
-          fi
-          git add .
+          helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }} --merge index.yaml
+          git add index.yaml "${{ steps.chart_info.outputs.chart_name }}-${{ steps.chart_info.outputs.chart_version }}.tgz"
           git commit -m "Update index with version ${{ steps.chart_info.outputs.chart_version }}" || echo "Nothing to commit"
           git push origin gh-pages
