@@ -7,9 +7,11 @@ metadata:
 spec:
   type: {{ .Values.services.mailpit.type }}
   ports:
-    - port: {{ .Values.services.mailpit.smtpPort }}
+    - name: smtp
+      port: {{ .Values.services.mailpit.smtpPort }}
       targetPort: {{ .Values.services.mailpit.smtpPort }}
-    - port: {{ .Values.services.mailpit.webPort }}
+    - name: web
+      port: {{ .Values.services.mailpit.webPort }}
       targetPort: {{ .Values.services.mailpit.webPort }}
   selector:
     app: saleor

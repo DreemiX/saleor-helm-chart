@@ -7,10 +7,27 @@ metadata:
 spec:
   type: {{ .Values.services.jaeger.type }}
   ports:
-    {{- range .Values.services.jaeger.ports }}
-    - port: {{ . }}
-      targetPort: {{ . }}
-    {{- end }}
+    - name: jaeger-5775
+      port: 5775
+      targetPort: 5775
+    - name: jaeger-6831
+      port: 6831
+      targetPort: 6831
+    - name: jaeger-6832
+      port: 6832
+      targetPort: 6832
+    - name: jaeger-5778
+      port: 5778
+      targetPort: 5778
+    - name: jaeger-16686
+      port: 16686
+      targetPort: 16686
+    - name: jaeger-14268
+      port: 14268
+      targetPort: 14268
+    - name: jaeger-9411
+      port: 9411
+      targetPort: 9411
   selector:
     app: saleor
     component: jaeger
