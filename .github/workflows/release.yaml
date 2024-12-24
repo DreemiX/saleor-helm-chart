@@ -79,7 +79,7 @@ jobs:
 
       - name: Download Chart from Release
         run: |
-          curl -sL -o "${{ env.chart_tgz_path }}" \
+          curl -sL -o "${{ env.chart_version }}.tgz" \
           "https://github.com/${{ github.repository }}/releases/download/v${{ env.chart_version }}/${{ env.chart_name }}-${{ env.chart_version }}.tgz"
 
       - name: Update Helm Repo Index
