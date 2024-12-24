@@ -29,17 +29,17 @@ jobs:
         run: |
           mkdir -p .cr-release-packages
           helm package . -d .cr-release-packages
-          ls -la .cr-release-packages/
       - name: Debug Current Directory
         run: |
-          echo "Debugging current directory after helm package:"
+          echo "Current directory:"
           pwd
-          ls -la
+          echo "Listing files in .cr-release-packages:"
+          ls -la .cr-release-packages/
       - name: Save package as artifact
         uses: actions/upload-artifact@v3
         with:
           name: helm-charts
-          path: ./.cr-release-packages/**  # Виправлення шляху для збереження
+          path: ${{ github.workspace }}/.cr-release-packages/**  # Абсолютний шлях до файлів
   publish:
     needs: package
     runs-on: ubuntu-latest
@@ -53,6 +53,7 @@ jobs:
           clean: true
       - name: List artifacts
         run: |
+          echo "Listing all available artifacts:"
           curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
       - name: Download chart artifact
@@ -62,7 +63,7 @@ jobs:
           path: ./
       - name: List downloaded files
         run: |
-          echo "Files after downloading artifact:"
+          echo "Downloaded files:"
           ls -la
       - name: Configure Git
         run: |
