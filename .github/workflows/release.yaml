@@ -10,6 +10,7 @@ jobs:
       contents: write
     outputs:
       helm_tgz_path: ${{ steps.get_version.outputs.helm_tgz_path }}
+      chart_version: ${{ steps.get_version.outputs.chart_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,12 +32,6 @@ jobs:
         run: |
           mkdir -p .cr-release-packages
           helm package . -d .cr-release-packages
-      - name: Debug Current Directory
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Listing files in .cr-release-packages:"
-          ls -la .cr-release-packages/
       - name: Get Chart Version + Dynamically Define Helm TGZ Path
         id: get_version
         run: |
@@ -44,12 +39,14 @@ jobs:
           name=$(grep '^name:' Chart.yaml | awk '{print $2}')
           tgz_path=".cr-release-packages/${name}-${version}.tgz"
           echo "tgz_path=$tgz_path" >> $GITHUB_ENV
+          echo "chart_version=$version" >> $GITHUB_OUTPUT
           echo "tgz_path=$tgz_path" >> $GITHUB_OUTPUT
       - name: Save package as artifact
         uses: actions/upload-artifact@v3
         with:
           name: helm-charts
-          path: ${{ env.tgz_path }}  # Використовуємо динамічний шлях, отриманий з Chart.yaml
+          path: ${{ env.tgz_path }}
+
   publish:
     needs: package
     runs-on: ubuntu-latest
@@ -61,24 +58,11 @@ jobs:
         with:
           ref: gh-pages
           clean: true
-      - name: List artifacts
-        run: |
-          echo "Listing all available artifacts:"
-          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
       - name: Download chart artifact
         uses: actions/download-artifact@v3
         with:
           name: helm-charts
           path: ./
-      - name: List downloaded files
-        run: |
-          echo "Downloaded files:"
-          ls -la
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
       - name: Install Helm
         uses: azure/setup-helm@v3
       - name: Update Helm index
@@ -88,8 +72,39 @@ jobs:
           else
             helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
           fi
-      - name: Commit and push changes
+      - name: Add and Commit Changes
         run: |
-          git add .
-          git commit -m "Update Helm chart release" || echo "No changes to commit"
+          git add --all
+          git commit -m "Release: Publishing new chart version" || echo "Nothing to commit"
+      - name: Push Changes
+        run: |
           git push origin gh-pages
+
+  create-release:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download chart artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: helm-charts
+          path: ./
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ needs.package.outputs.chart_version }}  # Використовуємо версію з Chart.yaml
+          release_name: Chart Release ${{ needs.package.outputs.chart_version }}
+          body: "Release for Helm chart. See README for usage details."
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Chart to Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.tgz_path }}
+          asset_name: ${{ env.tgz_path }}
+          asset_content_type: application/gzip
