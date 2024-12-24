@@ -3,21 +3,22 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-dashboard
   labels:
-    app: saleor
+    app: {{ .Chart.Name }}
+    component: dashboard
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: saleor
+      app: {{ .Chart.Name }}
       component: dashboard
   template:
     metadata:
       labels:
-        app: saleor
+        app: {{ .Chart.Name }}
         component: dashboard
     spec:
       containers:
         - name: dashboard
           image: "{{ .Values.images.dashboard }}"
           ports:
-            - containerPort: {{ .Values.services.dashboard.port }}
+            - containerPort: {{ .Values.components.dashboard.service.port }}
