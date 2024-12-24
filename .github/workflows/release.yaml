@@ -50,27 +50,9 @@ jobs:
       - name: Save package as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: helm-charts-${{ steps.get_version.outputs.version }}
+          name: helm-charts
           path: .cr-release-packages/*.tgz
           retention-days: 1
-
-      - name: Create Release
-        run: |
-          version="${{ steps.get_version.outputs.version }}"
-          if [ -n "$version" ]; then
-            if ! gh release view "v$version" &>/dev/null; then
-              gh release create "v$version" .cr-release-packages/*.tgz \
-                --title "Release v$version" \
-                --generate-notes
-            else
-              echo "Release v$version already exists"
-            fi
-          else
-            echo "Error: Could not determine version from Chart.yaml"
-            exit 1
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     needs: package
@@ -93,7 +75,7 @@ jobs:
       - name: Download chart artifact
         uses: actions/download-artifact@v3
         with:
-          name: helm-charts-${{ needs.package.outputs.chart_version }}
+          name: helm-charts
           path: .
 
       - name: List files
