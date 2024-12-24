@@ -32,19 +32,49 @@ jobs:
         run: |
           helm dependency update .
 
+      # Крок 1: Створення пакету
       - name: Package Helm chart
         run: |
           mkdir -p .cr-release-packages
           helm package . -d .cr-release-packages
 
-      - name: Upload chart package
-        uses: actions/upload-artifact@v3
-        with:
-          name: helm-chart
-          path: .cr-release-packages/*.tgz
+      # Крок 2: Створення індексного файлу
+      - name: Generate Helm index
+        run: |
+          helm repo index .cr-release-packages
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.5.0
+      # Крок 3: Створення GitHub Release
+      - name: Create Release
+        run: |
+          version=$(grep 'version:' Chart.yaml | awk '{print $2}')
+          gh release create "v$version" .cr-release-packages/*.tgz \
+            --title "Release v$version" \
+            --generate-notes
         env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_SKIP_EXISTING: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Крок 4: Публікація в gh-pages
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          clean: true
+
+      # Крок 5: Копіювання файлів та оновлення індексу
+      - name: Update gh-pages
+        run: |
+          # Копіюємо новий пакет
+          cp .cr-release-packages/*.tgz .
+          # Оновлюємо або створюємо index.yaml
+          if [ -f index.yaml ]; then
+            helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }} --merge index.yaml
+          else
+            helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+          fi
+
+      # Крок 6: Публікація змін
+      - name: Push changes to gh-pages
+        run: |
+          git add .
+          git commit -m "Update Helm chart release"
+          git push origin gh-pages
