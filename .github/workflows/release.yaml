@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      chart_version: ${{ steps.get_version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,21 +34,29 @@ jobs:
         run: |
           helm dependency update .
 
+      - name: Get chart version
+        id: get_version
+        run: |
+          version=$(grep '^version:' Chart.yaml | sed 's/[^0-9.]*//g' | tr -d '[:space:]')
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "Chart version: $version"
+
       - name: Package Helm chart
         run: |
           mkdir -p .cr-release-packages
           helm package . -d .cr-release-packages
+          ls -la .cr-release-packages/
 
       - name: Save package as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: helm-charts
+          name: helm-charts-${{ steps.get_version.outputs.version }}
           path: .cr-release-packages/*.tgz
           retention-days: 1
 
       - name: Create Release
         run: |
-          version=$(grep '^version:' Chart.yaml | sed 's/[^0-9.]*//g' | tr -d '[:space:]')
+          version="${{ steps.get_version.outputs.version }}"
           if [ -n "$version" ]; then
             if ! gh release view "v$version" &>/dev/null; then
               gh release create "v$version" .cr-release-packages/*.tgz \
@@ -74,11 +84,22 @@ jobs:
           ref: gh-pages
           clean: true
 
+      - name: List available artifacts
+        run: |
+          echo "Available artifacts:"
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
+
       - name: Download chart artifact
         uses: actions/download-artifact@v3
         with:
-          name: helm-charts
+          name: helm-charts-${{ needs.package.outputs.chart_version }}
           path: .
+
+      - name: List files
+        run: |
+          ls -la
+          pwd
 
       - name: Configure Git
         run: |
