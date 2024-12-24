@@ -5,7 +5,7 @@ Helm chart для розгортання Saleor e-commerce платформи в
 ## Встановлення
 
 ```bash
-helm repo add saleor https://ghcr.io/ВАШЕ_GITHUB_ІМ'Я/saleor-helm
+helm repo add saleor https://dreemix.github.io/saleor-helm-chart/
 helm install my-saleor saleor/saleor
 ```
 
