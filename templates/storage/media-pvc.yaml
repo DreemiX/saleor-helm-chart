@@ -6,8 +6,8 @@ metadata:
     {{- include "saleor.labels" . | nindent 4 }}
 spec:
   accessModes:
-    - ReadWriteMany
-  storageClassName: standard-rwo  # GCP's Regional storage class for ReadWriteMany
+    - ReadWriteOnce
+  storageClassName: standard  # GCP's Regional storage class for ReadWriteMany
   resources:
     requests:
       storage: {{ .Values.storage.media.size }}

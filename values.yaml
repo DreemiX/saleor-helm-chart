@@ -50,7 +50,7 @@ worker:
 storage:
   media:
     size: 5Gi
-    storageClass: standard-rwo  # GCP's Regional storage class
+    storageClass: standard  # GCP's Regional storage class
 
 postgresql:
   enabled: true
