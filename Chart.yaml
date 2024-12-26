@@ -1,7 +1,7 @@
 apiVersion: v2
 name: saleor
 description: A Helm chart for Saleor e-commerce platform
-version: 0.1.28
+version: 0.1.29
 appVersion: "3.20"
 dependencies:
   - name: postgresql
