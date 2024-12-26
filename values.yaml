@@ -28,12 +28,10 @@ dashboard:
     type: ClusterIP
     port: 80
 
-# Add default service configuration
 service:
   type: ClusterIP
   port: 8000
 
-# Add default image configuration
 image:
   repository: ghcr.io/saleor/saleor
   tag: "3.20"
@@ -51,7 +49,8 @@ worker:
 
 storage:
   media:
-    size: 10Gi
+    size: 5Gi
+    storageClass: standard-rwo  # GCP's Regional storage class
 
 postgresql:
   enabled: true
@@ -61,10 +60,14 @@ postgresql:
     database: saleor
   primary:
     persistence:
-      size: 10Gi
+      size: 5Gi
+      storageClass: standard  # GCP's default storage class
 
 redis:
   enabled: true
   auth:
     password: saleor
   architecture: standalone
+  master:
+    persistence:
+      storageClass: standard  # GCP's default storage class
