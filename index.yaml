@@ -3,6 +3,24 @@ entries:
   saleor:
   - apiVersion: v2
     appVersion: "3.20"
+    created: "2024-12-26T11:54:36.664455432Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: ~12.5.5
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: ~17.11.3
+    description: A Helm chart for Saleor e-commerce platform
+    digest: aad892a3c2fe2e681551c167f4d331bceb2fb97b9b3b97d73e7e1ff1849637fe
+    name: saleor
+    urls:
+    - https://DreemiX.github.io/saleor-helm-chart/saleor-0.1.26.tgz
+    version: 0.1.26
+  - apiVersion: v2
+    appVersion: "3.20"
     created: "2024-12-26T11:38:50.471578033Z"
     dependencies:
     - condition: postgresql.enabled
@@ -357,4 +375,4 @@ entries:
     urls:
     - https://DreemiX.github.io/saleor-helm-chart/saleor-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-26T11:38:50.462270288Z"
+generated: "2024-12-26T11:54:36.654636773Z"
