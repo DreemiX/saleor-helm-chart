@@ -33,6 +33,12 @@ service:
   type: ClusterIP
   port: 8000
 
+# Add default image configuration
+image:
+  repository: ghcr.io/saleor/saleor
+  tag: "3.20"
+  pullPolicy: IfNotPresent
+
 worker:
   replicaCount: 1
   resources:
