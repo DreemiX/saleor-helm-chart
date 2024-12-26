@@ -28,6 +28,11 @@ dashboard:
     type: ClusterIP
     port: 80
 
+# Add default service configuration
+service:
+  type: ClusterIP
+  port: 8000
+
 worker:
   replicaCount: 1
   resources:
