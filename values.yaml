@@ -1,74 +1,59 @@
-replicaCount: 1
-images:
-  api: ghcr.io/saleor/saleor:3.20
-  dashboard: ghcr.io/saleor/saleor-dashboard:latest
-  redis: library/redis:7.0-alpine
-  worker: ghcr.io/saleor/saleor:3.20
-  jaeger: jaegertracing/all-in-one
-  mailpit: axllent/mailpit
-env:
-  api:
-    JAEGER_AGENT_HOST: "jaeger"
-    DASHBOARD_URL: "http://localhost:9000/"
-    ALLOWED_HOSTS: "localhost,api"
-components:
-  api:
-    enabled: true
-    service:
-      port: 8000
-      type: ClusterIP
-    extraParams: {}
-  dashboard:
-    enabled: true
-    service:
-      port: 9000
-      type: ClusterIP
-    extraParams: {}
-  postgresql:
-    enabled: true
-    auth:
-      username: saleor
-      password: saleor
+api:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.20"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+  dashboardUrl: "http://localhost:9000/"
+  allowedHosts: "localhost,api"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  extraEnv: []
+
+dashboard:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/saleor/saleor-dashboard
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+
+worker:
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+
+storage:
+  media:
+    size: 10Gi
+
+postgresql:
+  enabled: true
+  auth:
+    username: saleor
+    password: saleor
+    database: saleor
+  primary:
     persistence:
-      enabled: true
-      size: 5Gi
-    extraParams: {}
-  redis:
-    enabled: true
-    service:
-      port: 6379
-      type: ClusterIP
-    master:
-      persistence:
-        enabled: true
-        size: 2Gi
-    replica:
-      replicaCount: 0  # Встановіть 0, якщо не потрібні репліки
-      persistence:
-        enabled: true
-        size: 2Gi
-    extraParams: {}
-  jaeger:
-    enabled: true
-    service:
-      ports:
-        - 5775
-        - 6831
-        - 6832
-        - 5778
-        - 16686
-        - 14268
-        - 9411
-      type: ClusterIP
-    extraParams: {}
-  mailpit:
-    enabled: true
-    service:
-      smtpPort: 1025
-      webPort: 8025
-      type: ClusterIP
-    extraParams: {}
-volumes:
-  saleorDb: /var/lib/postgresql/data
-  saleorRedis: /data
-  saleorMedia: /app/media
+      size: 10Gi
+
+redis:
+  enabled: true
+  auth:
+    password: saleor
+  architecture: standalone

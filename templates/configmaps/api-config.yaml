@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "saleor.fullname" . }}-api-config
+data:
+  DASHBOARD_URL: {{ .Values.api.dashboardUrl | quote }}
+  ALLOWED_HOSTS: {{ .Values.api.allowedHosts | quote }}
+  DATABASE_URL: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.auth.database }}"
+  REDIS_URL: "redis://:{{ .Values.redis.auth.password }}@{{ .Release.Name }}-redis-master:6379/0"
+  {{- range .Values.api.extraEnv }}
+  {{ .name }}: {{ .value | quote }}
+  {{- end }}

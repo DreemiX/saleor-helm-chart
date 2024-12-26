@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "saleor.fullname" . }}-worker
+  labels:
+    {{- include "saleor.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  replicas: {{ .Values.worker.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "saleor.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        {{- include "saleor.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: worker
+    spec:
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: {{ include "saleor.fullname" . }}-media
+      containers:
+        - name: worker
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          command: ["celery", "-A", "saleor", "--app=saleor.celeryconf:app", "worker", "--loglevel=info", "-B"]
+          volumeMounts:
+            - name: media
+              mountPath: /app/media
+          envFrom:
+            - configMapRef:
+                name: {{ include "saleor.fullname" . }}-api-config
