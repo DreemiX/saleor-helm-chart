@@ -97,4 +97,5 @@ mailpit:
 persistence:
   media:
     enabled: true
+    storageClass: standard
     size: 1Gi
