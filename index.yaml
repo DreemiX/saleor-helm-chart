@@ -3,6 +3,16 @@ entries:
   saleor:
   - apiVersion: v2
     appVersion: "3.20"
+    created: "2025-01-06T13:49:06.982259334Z"
+    description: A Helm chart for Saleor e-commerce platform
+    digest: 4521455b5985cfe83b535c89e18fa413c88af8830042fd02ee9ca97325534251
+    name: saleor
+    type: application
+    urls:
+    - https://DreemiX.github.io/saleor-helm-chart/saleor-0.1.32.tgz
+    version: 0.1.32
+  - apiVersion: v2
+    appVersion: "3.20"
     created: "2025-01-06T13:17:29.212710488Z"
     description: A Helm chart for Saleor e-commerce platform
     digest: ceb2e9a9c930c9f612e93394b6ad803124076108d745a7afa50863a4b1779616
@@ -457,4 +467,4 @@ entries:
     urls:
     - https://DreemiX.github.io/saleor-helm-chart/saleor-0.1.0.tgz
     version: 0.1.0
-generated: "2025-01-06T13:17:29.211965756Z"
+generated: "2025-01-06T13:49:06.981499678Z"
