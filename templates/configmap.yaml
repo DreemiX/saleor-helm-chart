@@ -3,6 +3,13 @@ kind: ConfigMap
 metadata:
   name: {{ include "saleor.fullname" . }}-config
 data:
-  {{- range .Values.env }}
-  {{ .name }}: {{ .value | quote }}
-  {{- end }}
+  DEFAULT_CHANNEL_SLUG: {{ .Values.global.env.DEFAULT_CHANNEL_SLUG | quote }}
+  HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS: {{ .Values.global.env.HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS | quote }}
+  HTTP_IP_FILTER_ENABLED: {{ .Values.global.env.HTTP_IP_FILTER_ENABLED | quote }}
+  CELERY_BROKER_URL: {{ .Values.global.env.CELERY_BROKER_URL | quote }}
+  DATABASE_URL: {{ .Values.global.env.DATABASE_URL | quote }}  # Add DATABASE_URL
+  DEFAULT_FROM_EMAIL: {{ .Values.global.env.DEFAULT_FROM_EMAIL | quote }}
+  EMAIL_URL: {{ .Values.global.env.EMAIL_URL | quote }}
+  JAEGER_AGENT_HOST: {{ .Values.global.env.JAEGER_AGENT_HOST | quote }}
+  DASHBOARD_URL: {{ .Values.global.env.DASHBOARD_URL | quote }}
+  ALLOWED_HOSTS: {{ .Values.global.env.ALLOWED_HOSTS | quote }}

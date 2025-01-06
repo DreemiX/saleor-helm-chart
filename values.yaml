@@ -1,5 +1,25 @@
+# Default values for saleor chart
+global:
+  database:
+    host: db
+    port: 5432
+    name: saleor
+    user: saleor
+    password: saleor
+  env:
+    DEFAULT_CHANNEL_SLUG: default-channel
+    HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS: "True"
+    HTTP_IP_FILTER_ENABLED: "True"
+    CELERY_BROKER_URL: redis://redis:6379/1
+    DATABASE_URL: "postgres://{{ .Values.global.database.user }}:{{ .Values.global.database.password }}@{{ .Values.global.database.host }}/{{ .Values.global.database.name }}"
+    DEFAULT_FROM_EMAIL: noreply@example.com
+    EMAIL_URL: smtp://mailpit:1025
+    SECRET_KEY: changeme
+    JAEGER_AGENT_HOST: jaeger
+    DASHBOARD_URL: http://localhost:9000/
+    ALLOWED_HOSTS: localhost,api
+
 api:
-  replicaCount: 1
   image:
     repository: ghcr.io/saleor/saleor
     tag: "3.20"
@@ -7,69 +27,74 @@ api:
   service:
     type: ClusterIP
     port: 8000
-  dashboardUrl: "http://localhost:9000/"
-  allowedHosts: "localhost,api"
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 500m
-      memory: 512Mi
-  extraEnv: []
+  resources: {}
 
 dashboard:
-  replicaCount: 1
   image:
     repository: ghcr.io/saleor/saleor-dashboard
-    tag: "latest"
+    tag: latest
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
-    port: 9000
-
-service:
-  type: ClusterIP
-  port: 8000
-
-image:
-  repository: ghcr.io/saleor/saleor
-  tag: "3.20"
-  pullPolicy: IfNotPresent
+    port: 80
+  resources: {}
 
 worker:
-  replicaCount: 1
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 200m
-      memory: 256Mi
-
-storage:
-  media:
-    size: 5Gi
-    storageClass: standard  # GCP's Regional storage class
-
-postgresql:
-  enabled: true
-  auth:
-    username: saleor
-    password: saleor
-    database: saleor
-  host: service-name.namespace.svc.cluster.local
-  primary:
-    persistence:
-      size: 5Gi
-      storageClass: standard  # GCP's default storage class
+  image:
+    repository: ghcr.io/saleor/saleor
+    tag: "3.20"
+    pullPolicy: IfNotPresent
+  resources: {}
 
 redis:
-  enabled: true
-  auth:
-    password: saleor
-  host: service-name.namespace.svc.cluster.local
-  architecture: standalone
-  master:
-    persistence:
-      storageClass: standard  # GCP's default storage class
+  image:
+    repository: library/redis
+    tag: "7.0-alpine"
+    pullPolicy: IfNotPresent
+  service:
+    port: 6379
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources: {}
+
+jaeger:
+  image:
+    repository: jaegertracing/all-in-one
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    ports:
+      - name: udp-5775
+        port: 5775
+        protocol: UDP
+      - name: udp-6831
+        port: 6831
+        protocol: UDP
+      - name: udp-6832
+        port: 6832
+        protocol: UDP
+      - name: tcp-5778
+        port: 5778
+      - name: tcp-16686
+        port: 16686
+      - name: tcp-14268
+        port: 14268
+      - name: tcp-9411
+        port: 9411
+  resources: {}
+
+mailpit:
+  image:
+    repository: axllent/mailpit
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    smtpPort: 1025
+    webPort: 8025
+  resources: {}
+
+persistence:
+  media:
+    enabled: true
+    size: 1Gi

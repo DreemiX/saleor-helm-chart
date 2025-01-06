@@ -6,7 +6,7 @@ metadata:
     {{- include "saleor.labels" . | nindent 4 }}
     app.kubernetes.io/component: worker
 spec:
-  replicas: {{ .Values.worker.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "saleor.selectorLabels" . | nindent 6 }}
@@ -17,18 +17,24 @@ spec:
         {{- include "saleor.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: worker
     spec:
+      containers:
+        - name: worker
+          image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
+          imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
+          command: ["celery", "-A", "saleor", "--app=saleor.celeryconf:app", "worker", "--loglevel=info", "-B"]
+          envFrom:
+            - configMapRef:
+                name: {{ include "saleor.fullname" . }}-config
+            - secretRef:
+                name: {{ include "saleor.fullname" . }}-secret
+          volumeMounts:
+            - name: media
+              mountPath: /app/media
+          {{- with .Values.worker.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       volumes:
         - name: media
           persistentVolumeClaim:
             claimName: {{ include "saleor.fullname" . }}-media
-      containers:
-        - name: worker
-          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
-          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
-          command: ["celery", "-A", "saleor", "--app=saleor.celeryconf:app", "worker", "--loglevel=info", "-B"]
-          volumeMounts:
-            - name: media
-              mountPath: /app/media
-          envFrom:
-            - configMapRef:
-                name: {{ include "saleor.fullname" . }}-api-config
