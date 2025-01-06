@@ -11,4 +11,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.media.size }}
+  storageClassName: {{ .Values.persistence.media.storageClass }}
 {{- end }}
