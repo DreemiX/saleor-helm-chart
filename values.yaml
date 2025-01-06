@@ -11,7 +11,6 @@ global:
     HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS: "True"
     HTTP_IP_FILTER_ENABLED: "True"
     CELERY_BROKER_URL: redis://redis:6379/1
-    DATABASE_URL: "postgres://{{ .Values.global.database.user }}:{{ .Values.global.database.password }}@{{ .Values.global.database.host }}/{{ .Values.global.database.name }}"
     DEFAULT_FROM_EMAIL: noreply@example.com
     EMAIL_URL: smtp://mailpit:1025
     SECRET_KEY: changeme
