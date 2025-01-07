@@ -18,6 +18,8 @@ global:
     DASHBOARD_URL: http://localhost:9000/
     DATABASE_URL: postgres://[username]:[password]@[host]/[database_name]
     ALLOWED_HOSTS: localhost,api
+    API_URL: http://localhost:8000/
+    STATIC_URL: http://localhost:9000/
 
 api:
   image:

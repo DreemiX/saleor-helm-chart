@@ -13,3 +13,5 @@ data:
   JAEGER_AGENT_HOST: {{ .Values.global.env.JAEGER_AGENT_HOST | quote }}
   DASHBOARD_URL: {{ .Values.global.env.DASHBOARD_URL | quote }}
   ALLOWED_HOSTS: {{ .Values.global.env.ALLOWED_HOSTS | quote }}
+  API_URL: {{ .Values.global.env.API_URL | quote }}
+  STATIC_URL: {{ .Values.global.env.STATIC_URL | quote }}
