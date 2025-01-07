@@ -26,9 +26,9 @@ spec:
           {{- with .Values.dashboard.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
-           envFrom:
+          {{- end }}
+          envFrom:
             - configMapRef:
                 name: {{ include "saleor.fullname" . }}-config
             - secretRef:
                 name: {{ include "saleor.fullname" . }}-secret
-          {{- end }}
