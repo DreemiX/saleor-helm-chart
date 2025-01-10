@@ -21,6 +21,11 @@ global:
     API_URL: http://localhost:8000/
     STATIC_URL: http://localhost:9000/
 
+    DEFAULT_FILE_STORAGE: "storages.backends.gcloud.GoogleCloudStorage"
+    GS_CREDENTIALS_FILE_PATH: "/etc/secrets/gcs-service-account.json"
+    GS_BUCKET_NAME: "name_backet"
+    MEDIA_URL: "https://storage.googleapis.com/name-backet/"
+
 api:
   image:
     repository: ghcr.io/saleor/saleor
@@ -101,3 +106,6 @@ persistence:
     enabled: true
     storageClass: standard
     size: 1Gi
+  gcs:
+    enabled: true
+    secretName: gcs-credentials

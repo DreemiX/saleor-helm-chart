@@ -31,11 +31,20 @@ spec:
           volumeMounts:
             - name: media
               mountPath: /app/media
+            - name: gcs-credentials
+              mountPath: /etc/secrets
+              readOnly: true
           {{- with .Values.api.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+            - name: gcs-credentials
+              mountPath: /etc/secrets
+              readOnly: true
       volumes:
         - name: media
           persistentVolumeClaim:
             claimName: {{ include "saleor.fullname" . }}-media
+        - name: gcs-credentials
+          secret:
+            secretName: {{ .Values.persistence.gcs.secretName }}

@@ -3,3 +3,4 @@
 charts/
 *.zip
 bolt/
+*.json

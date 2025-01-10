@@ -15,3 +15,9 @@ data:
   ALLOWED_HOSTS: {{ .Values.global.env.ALLOWED_HOSTS | quote }}
   API_URL: {{ .Values.global.env.API_URL | quote }}
   STATIC_URL: {{ .Values.global.env.STATIC_URL | quote }}
+
+  # GCS Specific Settings
+  DEFAULT_FILE_STORAGE: {{ .Values.global.env.DEFAULT_FILE_STORAGE | quote }}
+  GS_CREDENTIALS_FILE_PATH: {{ .Values.global.env.GS_CREDENTIALS_FILE_PATH | quote }}
+  GS_BUCKET_NAME: {{ .Values.global.env.GS_BUCKET_NAME | quote }}
+  MEDIA_URL: {{ .Values.global.env.MEDIA_URL | quote }}
