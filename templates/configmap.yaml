@@ -21,3 +21,14 @@ data:
   GS_CREDENTIALS_FILE_PATH: {{ .Values.global.env.GS_CREDENTIALS_FILE_PATH | quote }}
   GS_BUCKET_NAME: {{ .Values.global.env.GS_BUCKET_NAME | quote }}
   MEDIA_URL: {{ .Values.global.env.MEDIA_URL | quote }}
+  GS_PROJECT_ID: {{ .Values.global.env.GS_PROJECT_ID | quote }}
+  GS_LOCATION: {{ .Values.global.env.GS_LOCATION | quote }}
+  GS_CUSTOM_ENDPOINT: {{ .Values.global.env.GS_CUSTOM_ENDPOINT | quote }}
+  GS_MEDIA_BUCKET_NAME: {{ .Values.global.env.GS_MEDIA_BUCKET_NAME | quote }}
+  GS_AUTO_CREATE_BUCKET: {{ .Values.global.env.GS_AUTO_CREATE_BUCKET | quote }}
+  GS_QUERYSTRING_AUTH: {{ .Values.global.env.GS_QUERYSTRING_AUTH | quote }}
+  GS_DEFAULT_ACL: {{ .Values.global.env.GS_DEFAULT_ACL | quote }}
+  GS_MEDIA_CUSTOM_ENDPOINT: {{ .Values.global.env.GS_MEDIA_CUSTOM_ENDPOINT | quote }}
+  GS_EXPIRATION: {{ .Values.global.env.GS_EXPIRATION | quote }}
+  GS_FILE_OVERWRITE: {{ .Values.global.env.GS_FILE_OVERWRITE | quote }}
+  GOOGLE_APPLICATION_CREDENTIALS: {{ .Values.global.env.GOOGLE_APPLICATION_CREDENTIALS | quote }}
