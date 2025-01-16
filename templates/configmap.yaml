@@ -18,6 +18,7 @@ data:
 
   # GCS Specific Settings
   DEFAULT_FILE_STORAGE: {{ .Values.global.env.DEFAULT_FILE_STORAGE | quote }}
+  PRIVATE_FILE_STORAGE: {{ .Values.global.env.PRIVATE_FILE_STORAGE | quote }}
   GS_CREDENTIALS_FILE_PATH: {{ .Values.global.env.GS_CREDENTIALS_FILE_PATH | quote }}
   GS_BUCKET_NAME: {{ .Values.global.env.GS_BUCKET_NAME | quote }}
   MEDIA_URL: {{ .Values.global.env.MEDIA_URL | quote }}
