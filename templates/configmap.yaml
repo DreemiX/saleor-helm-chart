@@ -33,3 +33,5 @@ data:
   GS_EXPIRATION: {{ .Values.global.env.GS_EXPIRATION | quote }}
   GS_FILE_OVERWRITE: {{ .Values.global.env.GS_FILE_OVERWRITE | quote }}
   GOOGLE_APPLICATION_CREDENTIALS: {{ .Values.global.env.GOOGLE_APPLICATION_CREDENTIALS | quote }}
+  STATIC_ROOT: {{ .Values.global.env.STATIC_ROOT | quote }}
+  MEDIA_ROOT: {{ .Values.global.env.MEDIA_ROOT | quote }}
