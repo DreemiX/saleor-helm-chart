@@ -6,7 +6,7 @@ metadata:
     {{- include "saleor.labels" . | nindent 4 }}
     app.kubernetes.io/component: api
 spec:
-  serviceName: {{ include "saleor.fullname" . }}-headless # Додайте headless-сервіс в кластері
+  serviceName: {{ include "saleor.fullname" . }}-api
   replicas: 1
   selector:
     matchLabels:
