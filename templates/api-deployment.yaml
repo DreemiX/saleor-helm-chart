@@ -23,6 +23,8 @@ spec:
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           ports:
             - containerPort: 8000
+      imagePullSecrets:
+        - name: ghcr-secret 
           envFrom:
             - configMapRef:
                 name: {{ include "saleor.fullname" . }}-config
