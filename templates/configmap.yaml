@@ -35,3 +35,4 @@ data:
   GOOGLE_APPLICATION_CREDENTIALS: {{ .Values.global.env.GOOGLE_APPLICATION_CREDENTIALS | quote }}
   STATIC_ROOT: {{ .Values.global.env.STATIC_ROOT | quote }}
   MEDIA_ROOT: {{ .Values.global.env.MEDIA_ROOT | quote }}
+  SALEOR_DOMAIN: {{ .Values.global.env.SALEOR_DOMAIN | quote }}
