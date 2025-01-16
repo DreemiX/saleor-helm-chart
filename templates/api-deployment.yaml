@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "saleor.fullname" . }}-api
   labels:
     {{- include "saleor.labels" . | nindent 4 }}
     app.kubernetes.io/component: api
 spec:
+  serviceName: {{ include "saleor.fullname" . }}-headless # Додайте headless-сервіс в кластері
   replicas: 1
   selector:
     matchLabels:
@@ -41,9 +42,14 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
-        - name: media
-          persistentVolumeClaim:
-            claimName: {{ include "saleor.fullname" . }}-media
         - name: gcs-credentials
           secret:
             secretName: {{ .Values.persistence.gcs.secretName }}
+  volumeClaimTemplates:
+    - metadata:
+        name: media
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 5Gi # Адаптуйте розмір під ваш випадок

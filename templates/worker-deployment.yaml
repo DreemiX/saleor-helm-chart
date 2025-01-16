@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "saleor.fullname" . }}-worker
   labels:
@@ -18,7 +18,7 @@ spec:
         app.kubernetes.io/component: worker
     spec:
       imagePullSecrets:
-        - name: ghcr-secret 
+        - name: ghcr-secret
       containers:
         - name: worker
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
@@ -36,7 +36,11 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      volumes:
-        - name: media
-          persistentVolumeClaim:
-            claimName: {{ include "saleor.fullname" . }}-media
+  volumeClaimTemplates:
+    - metadata:
+        name: media
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 5Gi
