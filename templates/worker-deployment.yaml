@@ -17,13 +17,13 @@ spec:
         {{- include "saleor.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: worker
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret 
       containers:
         - name: worker
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           command: ["celery", "-A", "saleor", "--app=saleor.celeryconf:app", "worker", "--loglevel=info", "-B"]
-      imagePullSecrets:
-        - name: ghcr-secret 
           envFrom:
             - configMapRef:
                 name: {{ include "saleor.fullname" . }}-config

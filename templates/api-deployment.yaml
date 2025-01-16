@@ -17,14 +17,14 @@ spec:
         {{- include "saleor.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: api
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret 
       containers:
         - name: api
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           ports:
             - containerPort: 8000
-      imagePullSecrets:
-        - name: ghcr-secret 
           envFrom:
             - configMapRef:
                 name: {{ include "saleor.fullname" . }}-config
