@@ -1,0 +1,19 @@
+{{- if .Values.search.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "saleor.fullname" . }}-search
+  labels:
+    {{- include "saleor.labels" . | nindent 4 }}
+    app.kubernetes.io/component: search
+spec:
+  type: {{ .Values.search.service.type }}
+  ports:
+    - port: {{ .Values.search.service.port }}
+      targetPort: {{ .Values.search.containerPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "saleor.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: search
+{{- end }}
