@@ -39,4 +39,3 @@ data:
   STATIC_ROOT: {{ .Values.global.env.STATIC_ROOT | quote }}
   MEDIA_ROOT: {{ .Values.global.env.MEDIA_ROOT | quote }}
   SALEOR_DOMAIN: {{ .Values.global.env.SALEOR_DOMAIN | quote }}
-  ALLOWED_CLIENT_HOSTS: {{ .Values.global.env.ALLOWED_CLIENT_HOSTS | quote }}
