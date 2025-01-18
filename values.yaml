@@ -20,6 +20,9 @@ global:
     ALLOWED_HOSTS: localhost,api
     API_URL: http://localhost:8000/
     STATIC_URL: http://localhost:9000/
+    PUBLIC_URL: https://your-domain.com
+    ALLOWED_CLIENT_HOSTS: your-domain.com
+    ENABLE_SSL: True
 
     DEFAULT_FILE_STORAGE: "storages.backends.gcloud.GoogleCloudStorage"
     GS_CREDENTIALS_FILE_PATH: "/etc/secrets/gcs-service-account.json"

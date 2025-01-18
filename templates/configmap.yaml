@@ -15,6 +15,9 @@ data:
   ALLOWED_HOSTS: {{ .Values.global.env.ALLOWED_HOSTS | quote }}
   API_URL: {{ .Values.global.env.API_URL | quote }}
   STATIC_URL: {{ .Values.global.env.STATIC_URL | quote }}
+  PUBLIC_URL: {{ .Values.global.env.PUBLIC_URL | quote }}
+  ALLOWED_CLIENT_HOSTS: {{ .Values.global.env.ALLOWED_CLIENT_HOSTS | quote }}
+  ENABLE_SSL: {{ .Values.global.env.ENABLE_SSL | quote }}
 
   # GCS Specific Settings
   DEFAULT_FILE_STORAGE: {{ .Values.global.env.DEFAULT_FILE_STORAGE | quote }}
