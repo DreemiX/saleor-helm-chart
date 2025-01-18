@@ -65,10 +65,12 @@ search:
     type: ClusterIP
     port: 80
   env:
-    - name: APP_SALEOR_HOST
-      value: "https://your-saleor-instance.com"
-    - name: APP_TOKEN
-      value: "your_app_token"
+    SECRET_KEY: "your_secret_key"
+    APP_LOG_LEVEL: "info"
+    APP_SALEOR_HOST: "https://your-saleor-instance.com"
+    APP_TOKEN: "your_generated_app_token"
+    APP_IFRAME_BASE_URL: ""
+    APP_API_BASE_URL: ""
   resources: {}
 
 redis:
