@@ -1,0 +1,44 @@
+{{- if .Values.storefront.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "saleor.fullname" . }}-storefront
+  labels:
+    {{- include "saleor.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storefront
+spec:
+  replicas: {{ .Values.storefront.replicas }}
+  selector:
+    matchLabels:
+      {{- include "saleor.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: storefront
+  template:
+    metadata:
+      labels:
+        {{- include "saleor.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: storefront
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: storefront
+          image: "{{ .Values.storefront.image.repository }}:{{ .Values.storefront.image.tag }}"
+          imagePullPolicy: {{ .Values.storefront.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: {{ include "saleor.fullname" . }}-storefront-config
+            - secretRef:
+                name: {{ include "saleor.fullname" . }}-secret
+          volumeMounts:
+            - name: storefront-static-files
+              mountPath: /app/.next/static
+          {{- with .Values.storefront.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: storefront-static-files
+          emptyDir: {}
+{{- end }}

@@ -56,25 +56,32 @@ worker:
     pullPolicy: IfNotPresent
   resources: {}
 
-search:
+storefront:
   enabled: false
-  replicaCount: 1
+  replicas: 2
   image:
-    repository: ghcr.io/saleor/apps/search
-    tag: "1.22.20"
+    repository: your-docker-repo/saleor-storefront
+    tag: latest
     pullPolicy: IfNotPresent
-  containerPort: 8000
-  service:
-    type: ClusterIP
-    port: 80
+  resources:
+    limits:
+      memory: "512Mi"
+      cpu: "250m"
+    requests:
+      memory: "256Mi"
+      cpu: "125m"
   env:
-    SECRET_KEY: "your_secret_key"
-    APP_LOG_LEVEL: "info"
-    APP_SALEOR_HOST: "https://your-saleor-instance.com"
-    APP_TOKEN: "your_generated_app_token"
-    APP_IFRAME_BASE_URL: ""
-    APP_API_BASE_URL: ""
-  resources: {}
+    NEXT_PUBLIC_SALEOR_API_URL: "https://your-saleor-api-url.com/graphql/"
+    NEXT_PUBLIC_STOREFRONT_URL: "https://your-storefront-url.com"
+    SALEOR_APP_TOKEN: "your-saleor-app-token"
+    NEXT_PUBLIC_URL: "https://your-public-url.com"
+    NEXT_SECRET_NEWSLETTER_ENDPOINT: "https://your-newsletter-endpoint.com"
+    NEXT_SALEOR_TOKEN: "your-saleor-token"
+    NEXT_PUBLIC_SALEOR_TOKEN: "your-public-saleor-token"
+    NEXT_PUBLIC_CHANNEL_ID: "your-channel-id"
+    NEXT_PUBLIC_ALGOLIA_APP_ID: "your-algolia-app-id"
+    NEXT_PUBLIC_ALGOLIA_API_KEY: "your-algolia-api-key"
+    NEXT_PUBLIC_ALGOLIA_INDEX_NAME: "your-algolia-index-name"
 
 redis:
   image:

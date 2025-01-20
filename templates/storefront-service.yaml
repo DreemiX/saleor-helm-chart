@@ -1,0 +1,18 @@
+{{- if .Values.storefront.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "saleor.fullname" . }}-storefront
+  labels:
+    {{- include "saleor.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storefront
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+  selector:
+    {{- include "saleor.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: storefront
+{{- end }}

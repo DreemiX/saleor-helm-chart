@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "saleor.fullname" . }}-storefront-config
+  labels:
+    {{- include "saleor.labels" . | nindent 4 }}
+data:
+  NEXT_PUBLIC_SALEOR_API_URL: {{ .Values.storefront.env.NEXT_PUBLIC_SALEOR_API_URL | quote }}
+  NEXT_PUBLIC_STOREFRONT_URL: {{ .Values.storefront.env.NEXT_PUBLIC_STOREFRONT_URL | quote }}
+  SALEOR_APP_TOKEN: {{ .Values.storefront.env.SALEOR_APP_TOKEN | quote }}
+  NEXT_PUBLIC_URL: {{ .Values.storefront.env.NEXT_PUBLIC_URL | quote }}
+  NEXT_SECRET_NEWSLETTER_ENDPOINT: {{ .Values.storefront.env.NEXT_SECRET_NEWSLETTER_ENDPOINT | quote }}
+  NEXT_SALEOR_TOKEN: {{ .Values.storefront.env.NEXT_SALEOR_TOKEN | quote }}
+  NEXT_PUBLIC_SALEOR_TOKEN: {{ .Values.storefront.env.NEXT_PUBLIC_SALEOR_TOKEN | quote }}
+  NEXT_PUBLIC_CHANNEL_ID: {{ .Values.storefront.env.NEXT_PUBLIC_CHANNEL_ID | quote }}
+  NEXT_PUBLIC_ALGOLIA_APP_ID: {{ .Values.storefront.env.NEXT_PUBLIC_ALGOLIA_APP_ID | quote }}
+  NEXT_PUBLIC_ALGOLIA_API_KEY: {{ .Values.storefront.env.NNEXT_PUBLIC_ALGOLIA_API_KEY | quote }}
+  NEXT_PUBLIC_ALGOLIA_INDEX_NAME: {{ .Values.storefront.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME | quote }}
