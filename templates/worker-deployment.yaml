@@ -23,7 +23,7 @@ spec:
         - name: worker
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
-          command: ["celery", "-A", "saleor", "--app=saleor.celeryconf:app", "worker", "--loglevel=info", "-B"]
+          command: ["celery", "-A", "saleor", "--app=saleor.celeryconf:app", "worker", "--loglevel=debug", "-B"]
           envFrom:
             - configMapRef:
                 name: {{ include "saleor.fullname" . }}-config
