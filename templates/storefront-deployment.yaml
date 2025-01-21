@@ -31,14 +31,8 @@ spec:
                 name: {{ include "saleor.fullname" . }}-storefront-config
             - secretRef:
                 name: {{ include "saleor.fullname" . }}-secret
-          volumeMounts:
-            - name: storefront-static-files
-              mountPath: /app/.next/static
           {{- with .Values.storefront.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      volumes:
-        - name: storefront-static-files
-          emptyDir: {}
 {{- end }}
