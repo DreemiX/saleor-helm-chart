@@ -82,6 +82,7 @@ storefront:
     NEXT_PUBLIC_ALGOLIA_APP_ID: "your-algolia-app-id"
     NEXT_PUBLIC_ALGOLIA_API_KEY: "your-algolia-api-key"
     NEXT_PUBLIC_ALGOLIA_INDEX_NAME: "your-algolia-index-name"
+    NEXT_SECRET_PROMOTION_TOKEN: "token"
 
 redis:
   image:

@@ -16,3 +16,4 @@ data:
   NEXT_PUBLIC_ALGOLIA_APP_ID: {{ .Values.storefront.env.NEXT_PUBLIC_ALGOLIA_APP_ID | quote }}
   NEXT_PUBLIC_ALGOLIA_API_KEY: {{ .Values.storefront.env.NNEXT_PUBLIC_ALGOLIA_API_KEY | quote }}
   NEXT_PUBLIC_ALGOLIA_INDEX_NAME: {{ .Values.storefront.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME | quote }}
+  NEXT_SECRET_PROMOTION_TOKEN: {{ .Values.storefront.env.NEXT_SECRET_PROMOTION_TOKEN | quote }}
