@@ -1,0 +1,17 @@
+{{- if .Values.searchApp.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "search-app.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "search-app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80          # Порт, через який буде доступний сервіс
+      targetPort: 3000  # Порт, на якому працює контейнер
+  selector:
+    app.kubernetes.io/name: {{ include "search-app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

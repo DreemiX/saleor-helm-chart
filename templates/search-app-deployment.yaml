@@ -1,0 +1,34 @@
+{{- if .Values.searchApp.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "search-app.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "search-app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.searchApp.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "search-app.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "search-app.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: search-app
+          image: "{{ .Values.searchApp.image.repository }}:{{ .Values.searchApp.image.tag }}"
+          imagePullPolicy: {{ .Values.searchApp.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+          env:
+            {{- range .Values.searchApp.env }}
+            - name: {{ .name }}
+              value: "{{ .value }}"
+            {{- end }}
+          resources:
+            {{- toYaml .Values.searchApp.resources | nindent 12 }}
+{{- end }}

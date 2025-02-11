@@ -132,6 +132,19 @@ mailpit:
     webPort: 8025
   resources: {}
 
+searchApp:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: myrepo/search-app
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  env:
+    - name: NODE_ENV
+      value: "production"
+    # інші змінні оточення для search-app
+  resources: {}
+
 persistence:
   media:
     enabled: true
